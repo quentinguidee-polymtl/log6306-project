@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
+	"strings"
 )
 
 func Run() error {
@@ -32,14 +32,18 @@ func cleanup() error {
 	}
 
 	for _, entry := range entries {
+		p := path.Join("linter-dot", entry.Name())
+
 		if entry.IsDir() {
+			err = os.RemoveAll(p)
+			if err != nil {
+				return err
+			}
 			continue
 		}
 
-		ext := filepath.Ext(entry.Name())
-
-		if ext != ".dot" {
-			err := os.Remove(path.Join("linter-dot", entry.Name()))
+		if !strings.HasSuffix(entry.Name(), "cgraph.dot") && !strings.HasSuffix(entry.Name(), "cgraph.png") {
+			err := os.Remove(p)
 			if err != nil {
 				log.Fatalf("%v", err)
 				return err
