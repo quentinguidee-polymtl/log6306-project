@@ -26,13 +26,15 @@ func Run() error {
 
 // cleanup deletes all useless files
 func cleanup() error {
-	entries, err := os.ReadDir("linter-dot")
+	doxygenPath := "linter-dot"
+
+	entries, err := os.ReadDir(doxygenPath)
 	if err != nil {
 		return err
 	}
 
 	for _, entry := range entries {
-		p := path.Join("linter-dot", entry.Name())
+		p := path.Join(doxygenPath, entry.Name())
 
 		if entry.IsDir() {
 			err = os.RemoveAll(p)
@@ -42,7 +44,7 @@ func cleanup() error {
 			continue
 		}
 
-		if !strings.HasSuffix(entry.Name(), "cgraph.dot") && !strings.HasSuffix(entry.Name(), "cgraph.png") {
+		if !strings.HasSuffix(entry.Name(), "cgraph.dot") && !strings.HasSuffix(entry.Name(), "cgraph.png") && entry.Name() != "functions.html" {
 			err := os.Remove(p)
 			if err != nil {
 				log.Fatalf("%v", err)
