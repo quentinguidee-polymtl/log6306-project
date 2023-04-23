@@ -1,23 +1,30 @@
 package smells
 
 import (
-	"os"
+	"log"
 
-	"github.com/awalterschulze/gographviz"
+	methodstool "github.com/quentinguidee/ue-linter/tools/methods"
 )
 
-type TickSpawnDestroyAnalyzer struct{}
+type TickSpawnDestroyAnalyzer struct {
+	Methods []*methodstool.Method
+}
 
-func (t TickSpawnDestroyAnalyzer) Run(graphs []*gographviz.Graph) error {
-	err := walk(func(filepath string) {
-		_, err := os.ReadFile(filepath)
-		if err != nil {
-			return
-		}
+func (t TickSpawnDestroyAnalyzer) Run() error {
+	//var ticks []methodstool.Method
+	//
+	//for _, method := range t.Methods {
+	//	if method.Name == "Tick()" {
+	//		ticks = append(ticks, *method)
+	//	}
+	//}
 
-		//code := string(content)
+	tickMethods, err := getTickMethods()
+	if err != nil {
+		return err
+	}
 
-		//println(code)
-	})
+	log.Printf("%+v", tickMethods)
+
 	return err
 }

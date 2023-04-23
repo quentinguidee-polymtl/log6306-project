@@ -30,19 +30,21 @@ func main() {
 	methods := methodstool.ListProjectMethods()
 	log.Printf("%v", methods)
 
-	err = analyze(graphs)
+	err = analyze(methods, graphs)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func analyze(graphs []*gographviz.Graph) error {
+func analyze(methods []*methodstool.Method, graphs []*gographviz.Graph) error {
 	smellAnalyzers := []smells.SmellAnalyzer{
-		smells.TickSpawnDestroyAnalyzer{},
+		smells.TickSpawnDestroyAnalyzer{
+			Methods: methods,
+		},
 	}
 
 	for _, smellAnalyzer := range smellAnalyzers {
-		err := smellAnalyzer.Run(graphs)
+		err := smellAnalyzer.Run()
 		if err != nil {
 			return err
 		}

@@ -15,7 +15,7 @@ type Method struct {
 	Class string
 }
 
-func ListProjectMethods() []Method {
+func ListProjectMethods() []*Method {
 	content, err := os.ReadFile(path.Join("linter-dot", "functions.html"))
 	if err != nil {
 		return nil
@@ -26,7 +26,7 @@ func ListProjectMethods() []Method {
 		return nil
 	}
 
-	var methods []Method
+	var methods []*Method
 
 	selection := reader.Find("div#doc-content > div.contents > ul")
 	selection.Children().Map(func(i int, selection *goquery.Selection) string {
@@ -37,7 +37,7 @@ func ListProjectMethods() []Method {
 			return ""
 		}
 
-		methods = append(methods, Method{
+		methods = append(methods, &Method{
 			Name:  strings.TrimSpace(elements[0]),
 			Class: strings.TrimSpace(elements[1]),
 		})
