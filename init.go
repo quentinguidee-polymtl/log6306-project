@@ -5,41 +5,41 @@ import (
 	"log"
 	"os"
 
-	"github.com/awalterschulze/gographviz"
 	"github.com/quentinguidee/ue-linter/smells"
-	"github.com/quentinguidee/ue-linter/tools/dot"
-	"github.com/quentinguidee/ue-linter/tools/doxygen"
-	methodstool "github.com/quentinguidee/ue-linter/tools/methods"
+	"github.com/quentinguidee/ue-linter/tools"
 )
 
 func main() {
 	parseArgs()
 
 	if false {
-		err := doxygen.Run()
+		err := tools.RunDoxygen()
 		if err != nil {
 			os.Exit(1)
 		}
 	}
 
-	graphs, err := dot.ParseAll()
+	graphs, err := tools.ParseAll()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	methods := methodstool.ListProjectMethods()
-	log.Printf("%v", methods)
+	methods, err := tools.ListProjectMethods()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	err = analyze(methods, graphs)
+	err = analyze(methods, &graphs)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func analyze(methods []*methodstool.Method, graphs []*gographviz.Graph) error {
+func analyze(methods map[string]tools.Method, callGraphs *[]tools.CallGraph) error {
 	smellAnalyzers := []smells.SmellAnalyzer{
 		smells.TickSpawnDestroyAnalyzer{
-			Methods: methods,
+			Methods:    methods,
+			CallGraphs: callGraphs,
 		},
 	}
 

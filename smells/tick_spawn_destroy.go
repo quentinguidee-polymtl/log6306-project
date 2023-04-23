@@ -1,30 +1,46 @@
 package smells
 
 import (
-	"log"
+	"fmt"
+	"strings"
 
-	methodstool "github.com/quentinguidee/ue-linter/tools/methods"
+	"github.com/quentinguidee/ue-linter/tools"
 )
 
 type TickSpawnDestroyAnalyzer struct {
-	Methods []*methodstool.Method
+	Methods    map[string]tools.Method
+	CallGraphs *[]tools.CallGraph
 }
 
 func (t TickSpawnDestroyAnalyzer) Run() error {
-	//var ticks []methodstool.Method
-	//
-	//for _, method := range t.Methods {
-	//	if method.Name == "Tick()" {
-	//		ticks = append(ticks, *method)
-	//	}
-	//}
+	// Find all methods executed during ticks
+	var methodsToAnalyze []tools.Method
 
-	tickMethods, err := getTickMethods()
-	if err != nil {
-		return err
+	for _, graph := range *t.CallGraphs {
+		if !strings.Contains(graph.Name, "Tick") {
+			continue
+		}
+		for _, node := range (*graph.Nodes).Nodes {
+			id := node.Attrs["label"]
+			id = id[1 : len(id)-1]
+			methodsToAnalyze = append(methodsToAnalyze, t.Methods[id])
+		}
 	}
 
-	log.Printf("%+v", tickMethods)
+	for i, m := range methodsToAnalyze {
+		fmt.Printf("=> ANALYZER_TICK_SPAWN_DESTROY %d: %s::%s\n", i+1, m.Class, m.Name)
+		t.FindInMethod(m)
+	}
 
-	return err
+	return nil
+}
+
+func (t TickSpawnDestroyAnalyzer) FindInMethod(m tools.Method) {
+	if strings.Contains(m.Content, "SpawnActor") {
+		fmt.Printf("Potential game smell in %s::%s: found a SpawnActor call.\n", m.Class, m.Name)
+	}
+
+	if strings.Contains(m.Content, "DestroyActor") {
+		fmt.Printf("Potential game smell in %s::%s: found a DestroyActor call.\n", m.Class, m.Name)
+	}
 }

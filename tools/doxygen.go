@@ -1,4 +1,4 @@
-package doxygen
+package tools
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Run() error {
+func RunDoxygen() error {
 	cmd := exec.Command("doxygen", "Doxyfile")
 
 	cmd.Stdout = os.Stdout
@@ -20,12 +20,12 @@ func Run() error {
 		return err
 	}
 
-	err = cleanup()
+	err = cleanupDoxygen()
 	return err
 }
 
 // cleanup deletes all useless files
-func cleanup() error {
+func cleanupDoxygen() error {
 	doxygenPath := "linter-dot"
 
 	entries, err := os.ReadDir(doxygenPath)

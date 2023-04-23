@@ -1,14 +1,19 @@
-package dot
+package tools
 
 import (
-	"github.com/awalterschulze/gographviz"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/awalterschulze/gographviz"
 )
 
-func ParseAll() ([]*gographviz.Graph, error) {
-	var graphs []*gographviz.Graph
+type CallGraph struct {
+	gographviz.Graph
+}
+
+func ParseAll() ([]CallGraph, error) {
+	var graphs []CallGraph
 
 	entries, err := os.ReadDir("linter-dot")
 	if err != nil {
@@ -34,9 +39,13 @@ func ParseAll() ([]*gographviz.Graph, error) {
 				return nil, err
 			}
 
-			graphs = append(graphs, graph)
+			graphs = append(graphs, CallGraph{*graph})
 		}
 	}
 
 	return graphs, nil
+}
+
+func (g CallGraph) Get(method string) error {
+	return nil
 }
