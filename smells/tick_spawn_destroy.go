@@ -12,30 +12,30 @@ type TickSpawnDestroyAnalyzer struct {
 	CallGraphs *[]tools.CallGraph
 }
 
-func (t TickSpawnDestroyAnalyzer) Run() error {
+func (a TickSpawnDestroyAnalyzer) Run() error {
 	// Find all methods executed during ticks
 	var methodsToAnalyze []tools.Method
 
-	for _, graph := range *t.CallGraphs {
+	for _, graph := range *a.CallGraphs {
 		if !strings.Contains(graph.Name, "Tick") {
 			continue
 		}
 		for _, node := range (*graph.Nodes).Nodes {
 			id := node.Attrs["label"]
 			id = id[1 : len(id)-1]
-			methodsToAnalyze = append(methodsToAnalyze, t.Methods[id])
+			methodsToAnalyze = append(methodsToAnalyze, a.Methods[id])
 		}
 	}
 
 	for i, m := range methodsToAnalyze {
 		fmt.Printf("=> ANALYZER_TICK_SPAWN_DESTROY %d: %s::%s\n", i+1, m.Class, m.Name)
-		t.FindInMethod(m)
+		a.FindInMethod(m)
 	}
 
 	return nil
 }
 
-func (t TickSpawnDestroyAnalyzer) FindInMethod(m tools.Method) {
+func (a TickSpawnDestroyAnalyzer) FindInMethod(m tools.Method) {
 	if strings.Contains(m.Content, "SpawnActor") {
 		fmt.Printf("Potential game smell in %s::%s: found a SpawnActor call.\n", m.Class, m.Name)
 	}

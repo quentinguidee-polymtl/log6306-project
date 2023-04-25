@@ -41,6 +41,9 @@ func analyze(methods map[string]tools.Method, callGraphs *[]tools.CallGraph) err
 			Methods:    methods,
 			CallGraphs: callGraphs,
 		},
+		smells.FindObjectAnalyzer{
+			Methods: methods,
+		},
 	}
 
 	for _, smellAnalyzer := range smellAnalyzers {
