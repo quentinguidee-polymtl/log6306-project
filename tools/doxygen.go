@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -11,9 +12,9 @@ import (
 func RunDoxygen() error {
 	cmd := exec.Command("doxygen", "Doxyfile")
 
-	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
+
+	fmt.Println("Running Doxygen...")
 
 	err := cmd.Run()
 	if err != nil {

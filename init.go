@@ -12,11 +12,9 @@ import (
 func main() {
 	parseArgs()
 
-	if false {
-		err := tools.RunDoxygen()
-		if err != nil {
-			os.Exit(1)
-		}
+	err := tools.RunDoxygen()
+	if err != nil {
+		os.Exit(1)
 	}
 
 	graphs, err := tools.ParseAll()
