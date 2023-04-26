@@ -27,8 +27,7 @@ func (a TickSpawnDestroyAnalyzer) Run() error {
 		}
 	}
 
-	for i, m := range methodsToAnalyze {
-		fmt.Printf("=> ANALYZER_TICK_SPAWN_DESTROY %d: %s::%s\n", i+1, m.Class, m.Name)
+	for _, m := range methodsToAnalyze {
 		a.FindInMethod(m)
 	}
 
@@ -36,11 +35,13 @@ func (a TickSpawnDestroyAnalyzer) Run() error {
 }
 
 func (a TickSpawnDestroyAnalyzer) FindInMethod(m tools.Method) {
-	if strings.Contains(m.Content, "SpawnActor") {
-		fmt.Printf("Potential game smell in %s::%s: found a SpawnActor call.\n", m.Class, m.Name)
+	countSpawn := strings.Count(m.Content, "SpawnActor")
+	if countSpawn > 0 {
+		fmt.Printf("Potential game smell in %s::%s: found %d SpawnActor call.\n", m.Class, m.Name, countSpawn)
 	}
 
-	if strings.Contains(m.Content, "DestroyActor") {
-		fmt.Printf("Potential game smell in %s::%s: found a DestroyActor call.\n", m.Class, m.Name)
+	countDestroy := strings.Count(m.Content, "DestroyActor")
+	if countDestroy > 0 {
+		fmt.Printf("Potential game smell in %s::%s: found %d DestroyActor call.\n", m.Class, m.Name, countDestroy)
 	}
 }
