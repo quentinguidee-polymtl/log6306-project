@@ -44,6 +44,10 @@ func analyze(methods map[string]tools.Method, callGraphs *[]tools.CallGraph) err
 		smells.FindObjectAnalyzer{
 			Methods: methods,
 		},
+		smells.HeavyTickAnalyzer{
+			Methods:    methods,
+			CallGraphs: callGraphs,
+		},
 	}
 
 	for _, smellAnalyzer := range smellAnalyzers {

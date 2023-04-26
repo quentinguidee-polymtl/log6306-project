@@ -79,14 +79,11 @@ func ListProjectMethods() (map[string]Method, error) {
 					match = 0
 
 					// Keep only the method body
-					r := regexp.MustCompile(`\{([^}]*)}`)
-					res := r.FindStringSubmatch(method.Content)
-					if len(res) > 0 {
-						method.Content = res[0][1 : len(res[0])-1]
-						method.Content = strings.TrimSpace(method.Content)
+					method.Content = method.Content[strings.Index(method.Content, "{")+1 : strings.LastIndex(method.Content, "}")]
+					method.Content = strings.TrimSpace(method.Content)
 
-						methods[fmt.Sprintf(method.Class+"::"+method.Name)] = method
-					}
+					methods[fmt.Sprintf(method.Class+"::"+method.Name)] = method
+
 					method = Method{}
 				}
 			}
