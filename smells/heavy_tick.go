@@ -39,13 +39,17 @@ func (a HeavyTickAnalyzer) Run() error {
 		}
 
 		changed := true
-		maxDepth := 5
+		maxDepth := 100
 		depth := 0
+
 		for changed && depth < maxDepth {
 			changed = false
 
+			//println("---")
+			//println(tick.Content)
+
 			for _, m := range children {
-				if strings.Count(tick.Content, m.Name) > 0 {
+				if strings.Count(tick.Content, m.Name+"(") > 0 {
 					tick.Content = strings.ReplaceAll(tick.Content, m.Name, m.Content)
 					changed = true
 				}

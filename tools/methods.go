@@ -78,11 +78,13 @@ func ListProjectMethods() (map[string]Method, error) {
 					inTick = false
 					match = 0
 
-					// Keep only the method body
-					method.Content = method.Content[strings.Index(method.Content, "{")+1 : strings.LastIndex(method.Content, "}")]
-					method.Content = strings.TrimSpace(method.Content)
+					if strings.Contains(method.Content, "{") && strings.Contains(method.Content, "{") {
+						// Keep only the method body
+						method.Content = method.Content[strings.Index(method.Content, "{")+1 : strings.LastIndex(method.Content, "}")]
+						method.Content = strings.TrimSpace(method.Content)
 
-					methods[fmt.Sprintf(method.Class+"::"+method.Name)] = method
+						methods[fmt.Sprintf(method.Class+"::"+method.Name)] = method
+					}
 
 					method = Method{}
 				}
